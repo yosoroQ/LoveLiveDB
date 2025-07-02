@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ラブライブ！BD 情報</title>
+  <title>LoveLive！BD 情报</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: "微软雅黑", sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f9f9f9;
       display: flex;
+      flex-direction: row;
+      overflow-x: hidden;
     }
 
     #sidebar {
@@ -24,7 +26,7 @@
       color: #000;
       border-right: 1px solid #ddd;
       border-bottom-right-radius: 12px;
-      padding: 2em 0; /* ✅ 只改这里 */
+      padding: 80px 0 10px 0;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       z-index: 1000;
     }
@@ -52,12 +54,13 @@
 
     #sidebarToggle {
       position: fixed;
-      top: 0px; /* ✅ 原来是 top: 0；现在下移一点 */
-      left: 0;
-      width: 48px;
-      height: 48px;
+      top: 12px;
+      left: 12px;
+      width: 40px;
+      height: 40px;
       background: pink;
       backdrop-filter: blur(10px);
+      border-radius: 50%;
       cursor: pointer;
       display: none;
       align-items: center;
@@ -66,17 +69,18 @@
     }
 
     #sidebarToggle svg {
-      fill: #000;
+      fill: black;
       width: 24px;
       height: 24px;
     }
 
-    .main-content {
+    main {
       flex-grow: 1;
       padding: 20px;
-      margin-left: 200px;
+      margin-left: 220px;
+      margin-top: 80px;
       box-sizing: border-box;
-      width: 100%;
+      max-width: 960px;
     }
 
     h1 {
@@ -102,24 +106,71 @@
 
     table {
       width: 100%;
-      border-collapse: collapse;
-      min-width: 600px;
+      border-collapse: separate; /* 为圆角服务 */
+      border-spacing: 0;
+      border-radius: 8px;
+      overflow: hidden;
       background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
-
+    
     th, td {
       padding: 12px 16px;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #eee;
       text-align: left;
       font-size: 0.95em;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 300px;
+    }
+    
+    td[title] {
+      cursor: help;
     }
 
     th {
-      background-color: #f0f0f0;
+      background-color: #ff1493; /* Muse 粉 */
+      color: white;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
     }
 
     tr:hover {
-      background-color: #f9f9f9;
+      background-color: #fdf4f9;
+    }
+    /* 根据第三列组合名调整整行颜色 */
+    /*tr.aqours {*/
+    /*  color: #00bfff; */
+    /*}*/
+    /*tr.μ's {*/
+    /*  color: #ff1493; */
+    /*}*/
+    /*tr.虹ヶ咲学園スクールアイドル同好会 {*/
+    /*  color: #fcc800; */
+    /*}*/
+    /*tr.Liella {*/
+    /*  color: #9932cc; */
+    /*}*/
+    /*tr.蓮ノ空女学院スクールアイドルクラブ {*/
+    /*  color: #ffc0cb; */
+    /*}*/
+    
+    /* 根据组合英文类名调整整行颜色 */
+    tr.aqours {
+      color: #00bfff; /* 天蓝 */
+    }
+    tr.muse {
+      color: #ff1493; /* 深粉 */
+    }
+    tr.nijigasaki {
+      color: #fcc800; /* 黄橙 */
+    }
+    tr.liella {
+      color: #9932cc; /* 深紫 */
+    }
+    tr.hasunosora {
+      color: #ffc0cb; /* 浅粉 */
     }
 
     @media (max-width: 768px) {
@@ -133,8 +184,11 @@
       #sidebarToggle {
         display: flex;
       }
-      .main-content {
+      main {
         margin-left: 0;
+        margin-top: 20px;
+        padding: 16px;
+        max-width: 100%;
       }
     }
 
@@ -146,80 +200,787 @@
   </style>
 </head>
 <body>
-  <div id="sidebarToggle" title="メニュー" role="button" tabindex="0">
+  <div id="sidebarToggle" title="菜单切换" role="button" tabindex="0">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <path d="M3 6h18M3 12h18M3 18h18" stroke="black" stroke-width="2" stroke-linecap="round"/>
     </svg>
   </div>
 
-  <nav id="sidebar">
-    <ul>
-      <li><a href="index.html">首页</a></li>
-      <li><a href="index.html">成员</a></li>
-      <li><a href="test.html">歌曲</a></li>
-      <li><a href="test.html">声优</a></li>
-      <li><a href="test.html">TV</a></li>
-      <li><a href="mindp.html">思维导图</a></li>
-    </ul>
+  <nav id="sidebar-container">
+    <!-- 侧边栏通过 fetch 加载 -->
   </nav>
 
-  <main class="main-content">
-    <h1>ラブライブ！BD・ライブ 一覧</h1>
-    <input type="text" id="searchInput" placeholder="キーワードでフィルタ（タイトル/チームなど）">
+  <main>
+    <h1>LoveLive！BD・Live 一览</h1>
+    <input type="text" id="searchInput" placeholder="现共计138 件，可在此搜索">
 
     <div class="table-container">
       <table id="dataTable">
         <thead>
           <tr>
-            <th>タイトル</th>
-            <th>日付</th>
-            <th>チーム</th>
+            <th>标题</th>
+            <th>日期</th>
+            <th>组合</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>ラブライブ！サンシャイン!! Aqours Finale LoveLive! ～永久stage～ Blu-ray Memorial BOX</td>
-            <td>2026年02月11日</td>
-            <td>aqours</td>
-          </tr>
-          <tr>
-            <td>LoveLive! Series Asia Tour 2024 ～みんなで叶える物語～</td>
-            <td>2025年10月01日</td>
-            <td>liella</td>
-          </tr>
-          <tr>
-            <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 7th Live! NEW TOKIMEKI LAND</td>
-            <td>2025年06月18日</td>
-            <td>虹</td>
-          </tr>
-          <!-- 你可以继续追加更多条目 -->
+          <td>ラブライブ！サンシャイン!! Aqours Finale LoveLive! ～永久stage～ Blu-ray Memorial BOX</td>
+          <td>2026年02月11日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>フラワーミュージックチャレンジ</td>
+          <td>2025年10月29日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>LoveLive! Series Asia Tour 2024 ～みんなで叶える物語～</td>
+          <td>2025年10月01日</td>
+          <td>μ's、Aqours、Liella!、蓮ノ空、虹ヶ咲</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！蓮ノ空女学院スクールアイドルクラブ 3rd Live Tour TRI TRI UNITY!!!</td>
+          <td>2025年08月27日</td>
+          <td>蓮ノ空女学院スクールアイドルクラブ</td>
+        </tr>
+
+        <tr>
+          <td>MEMORIES</td>
+          <td>2025年06月30日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 7th Live! NEW TOKIMEKI LAND</td>
+          <td>2025年06月18日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ3期 Blu-ray 第6巻</td>
+          <td>2025年05月28日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！蓮ノ空女学院スクールアイドルクラブ 2nd Live Tour ～Blooming with ○○○～</td>
+          <td>2025年04月23日</td>
+          <td>蓮ノ空女学院スクールアイドルクラブ</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ3期 Blu-ray 第5巻</td>
+          <td>2025年04月23日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！スーパースター!! Liella! ユニットライブ＆ファンミーティングツアー 心・技・体！極上大冒険!!～最終章～</td>
+          <td>2025年04月16日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ3期 Blu-ray 第4巻</td>
+          <td>2025年03月26日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqoursと発見！ぬまづの歴史アドベンチャー!!</td>
+          <td>2025年02月26日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ3期 Blu-ray 第3巻</td>
+          <td>2025年02月26日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スクールアイドルミュージカル the DRAMA」</td>
+          <td>2025年02月05日</td>
+          <td>学园偶像音乐剧</td>
+        </tr>
+        <tr>
+          <td>映画『ラブライブ！虹ヶ咲学園スクールアイドル同好会 完結編 第1章』</td>
+          <td>2025年01月29日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ3期 Blu-ray 第2巻</td>
+          <td>2025年01月29日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ3期 Blu-ray 第1巻</td>
+          <td>2024年12月25日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>劇場総集編 幻日のヨハネ –SUNSHINE in the MIRROR- Blu-ray</td>
+          <td>2024年12月25日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>幻日のヨハネ -The Story of the Sound of Heart-</td>
+          <td>2024年11月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>LoveLive! Series Presents ユニット甲子園 2024</td>
+          <td>2024年11月20日</td>
+          <td>Aqours、Liella!、蓮ノ空、虹ヶ咲</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！蓮ノ空女学院スクールアイドルクラブ 1st Live Tour ～RUN！CAN！FUN！～</td>
+          <td>2024年10月16日</td>
+          <td>蓮ノ空女学院スクールアイドルクラブ</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！スーパースター!! Liella! 5th LoveLive! ～Twinkle Triangle～</td>
+          <td>2024年09月18日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「異次元フェス アイドルマスター★♥ラブライブ！歌合戦」Blu-ray</td>
+          <td>2024年08月07日</td>
+          <td>Aqours、Liella!、蓮ノ空、虹ヶ咲、学园偶像音乐剧</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 6th Live! I love You ⇆ You love Me</td>
+          <td>2024年07月31日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「にじよん あにめーしょん2」Blu-ray BOX</td>
+          <td>2024年06月26日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！スーパースター!! Liella! 4th LoveLive! Tour ～brand new Sparkle～</td>
+          <td>2024年05月15日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第7巻</td>
+          <td>2024年03月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第6巻</td>
+          <td>2024年02月28日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第5巻</td>
+          <td>2024年01月26日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第4巻</td>
+          <td>2023年12月22日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours EXTRA LoveLive! 2023 ～It's a 無限大☆WORLD～</td>
+          <td>2023年12月13日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第3巻</td>
+          <td>2023年11月22日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第2巻</td>
+          <td>2023年10月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 UNIT LIVE!</td>
+          <td>2023年10月18日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！スーパースター!! Liella! 3rd LoveLive! Tour ～WE WILL!!～</td>
+          <td>2023年10月04日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「幻日のヨハネ -SUNSHINE in the MIRROR-」TVアニメ Blu-ray 第1巻</td>
+          <td>2023年09月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 NEXT SKY</td>
+          <td>2023年08月30日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>MTV Unplugged Presents: LoveLive! Superstar!! Liella!</td>
+          <td>2023年06月28日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「にじよん あにめーしょん」Blu-ray BOX</td>
+          <td>2023年03月29日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 5th Live! 虹が咲く場所</td>
+          <td>2023年03月22日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ2期 Blu-ray 第6巻</td>
+          <td>2023年02月24日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 6th LoveLive! ～KU-RU-KU-RU Rock 'n' Roll TOUR～ ＜WINDY STAGE＞</td>
+          <td>2023年02月15日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ2期 Blu-ray 第5巻</td>
+          <td>2023年01月27日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！スーパースター!! Liella! 2nd LoveLive! ～What a Wonderful Dream!!～</td>
+          <td>2023年01月18日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ2期 Blu-ray 第4巻</td>
+          <td>2022年12月23日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第7巻</td>
+          <td>2022年12月23日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! AZALEA 2nd LoveLive! ～Amazing Travel DNA Reboot～</td>
+          <td>2022年12月21日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 6th LoveLive! ～KU-RU-KU-RU Rock 'n' Roll TOUR～ ＜SUNNY STAGE＞</td>
+          <td>2022年12月14日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Guilty Kiss 2nd LoveLive! ～Return To Love ♡ Kiss Kiss Kiss～</td>
+          <td>2022年12月07日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ2期 Blu-ray 第3巻</td>
+          <td>2022年11月25日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第6巻</td>
+          <td>2022年11月25日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! CYaRon！2nd LoveLive! ～大革命☆Wake Up Kingdom～</td>
+          <td>2022年11月16日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 6th LoveLive! ～KU-RU-KU-RU Rock 'n' Roll TOUR～ ＜OCEAN STAGE＞</td>
+          <td>2022年11月02日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ2期 Blu-ray 第2巻</td>
+          <td>2022年10月28日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第5巻</td>
+          <td>2022年10月28日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！スーパースター!!」TVアニメ2期 Blu-ray 第1巻</td>
+          <td>2022年09月28日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第4巻</td>
+          <td>2022年09月28日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>LoveLive! Series Presents COUNTDOWN LoveLive! 2021→2022 ～LIVE with a smile!～</td>
+          <td>2022年09月14日</td>
+          <td>Aqours、Liella!、虹ヶ咲</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第3巻</td>
+          <td>2022年08月26日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>Aqours EXTRA LoveLive! ～DREAMY CONCERT 2021～</td>
+          <td>2022年08月17日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第2巻</td>
+          <td>2022年07月27日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 4th Live! ～Love the Life We Live～</td>
+          <td>2022年07月27日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！スーパースター!! Liella! First LoveLive! Tour ～Starlines～</td>
+          <td>2022年07月06日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！虹ヶ咲学園スクールアイドル同好会」TVアニメ2期 Blu-ray 第1巻</td>
+          <td>2022年06月24日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! AZALEA First LOVELIVE! ～In The Dark /*秘密の物語*/～</td>
+          <td>2022年06月01日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会ファンディスク ～ときめき活動日誌～</td>
+          <td>2022年03月29日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Blu-ray BOX</td>
+          <td>2022年03月29日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！スーパースター!!」Blu-ray 第6巻</td>
+          <td>2022年02月25日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours World LoveLive!</td>
+          <td>2022年02月16日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！スーパースター!!」Blu-ray 第5巻</td>
+          <td>2022年01月26日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 3rd Live! School Idol Festival ～夢の始まり～</td>
+          <td>2022年01月12日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Special MV Collection ～Aqours カラフルパーティー!!～</td>
+          <td>2021年12月24日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！スーパースター!!」Blu-ray 第4巻</td>
+          <td>2021年12月24日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！スーパースター!!」Blu-ray 第3巻</td>
+          <td>2021年11月26日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 校内シャッフルフェスティバル</td>
+          <td>2021年11月03日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！スーパースター!!」Blu-ray 第2巻</td>
+          <td>2021年10月27日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！スーパースター!!」Blu-ray 第1巻</td>
+          <td>2021年09月28日</td>
+          <td>Liella!</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! CYaRon! First LOVELIVE! ～Braveheart Coaster～</td>
+          <td>2021年08月25日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Guilty Kiss First LOVELIVE! ～New Romantic Sailors～</td>
+          <td>2021年08月25日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours ONLINE LoveLive!</td>
+          <td>2021年07月07日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第7巻</td>
+          <td>2021年06月25日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Saint Snow 1st GIG ～Welcome to Dazzling White Town～</td>
+          <td>2021年06月09日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第6巻</td>
+          <td>2021年05月26日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第5巻</td>
+          <td>2021年04月27日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第4巻</td>
+          <td>2021年03月26日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 2nd Live!</td>
+          <td>2021年03月24日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第3巻</td>
+          <td>2021年02月25日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第2巻</td>
+          <td>2021年01月27日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>TVアニメ「ラブライブ！虹ヶ咲学園スクールアイドル同好会」Blu-ray 第1巻</td>
+          <td>2020年12月24日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>LoveLive! Series 9th Anniversary ラブライブ！フェス</td>
+          <td>2020年09月09日</td>
+          <td>μ's、Aqours、虹ヶ咲</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 First Live “with You”</td>
+          <td>2020年08月05日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!!ファンディスク ~Aqours Memories~</td>
+          <td>2020年03月19日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 5th LoveLive! ～Next SPARKLING!!〜</td>
+          <td>2020年01月08日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！ 9th Anniversary Blu-ray BOX</td>
+          <td>2019年10月25日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 Memorial Disc ～Blooming Rainbow～</td>
+          <td>2019年08月21日</td>
+          <td>虹ヶ咲学園スクールアイドル同好会</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!!The School Idol Movie Over the Rainbow</td>
+          <td>2019年07月26日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 4th LoveLive! ～Sailing to the Sunshine～</td>
+          <td>2019年05月29日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 3rd LoveLive! Tour ～WONDERFUL STORIES～</td>
+          <td>2019年03月06日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>Saint Snow PRESENTS LOVELIVE! SUNSHINE!! HAKODATE UNIT CARNIVAL</td>
+          <td>2018年10月24日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第7巻</td>
+          <td>2018年06月22日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第6巻</td>
+          <td>2018年05月25日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours 2nd LoveLive! HAPPY PARTY TRAIN TOUR</td>
+          <td>2018年04月25日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第5巻</td>
+          <td>2018年04月24日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第4巻</td>
+          <td>2018年03月23日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第3巻</td>
+          <td>2018年02月23日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第2巻</td>
+          <td>2018年01月26日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ2期 Blu-ray 第1巻</td>
+          <td>2017年12月22日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！サンシャイン!! Aqours First LoveLive! ～Step! ZERO to ONE～</td>
+          <td>2017年09月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第7巻</td>
+          <td>2017年03月24日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第6巻</td>
+          <td>2017年02月24日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第5巻</td>
+          <td>2017年01月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第4巻</td>
+          <td>2016年12月22日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第3巻</td>
+          <td>2016年11月25日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第2巻</td>
+          <td>2016年10月26日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！ μ's Final LoveLive! 〜μ'sic Forever♪♪♪♪♪♪♪♪♪～</td>
+          <td>2016年09月28日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！サンシャイン!!」TVアニメ1期 Blu-ray 第1巻</td>
+          <td>2016年09月27日</td>
+          <td>Aqours</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！μ's Live Collection</td>
+          <td>2016年08月26日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！The School Idol Movie</td>
+          <td>2015年12月15日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！ μ's Go→Go! LoveLive! 2015 ～Dream Sensation!～</td>
+          <td>2015年09月30日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第7巻</td>
+          <td>2014年12月25日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第6巻</td>
+          <td>2014年11月21日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第5巻</td>
+          <td>2014年10月29日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第4巻</td>
+          <td>2014年09月24日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第3巻</td>
+          <td>2014年08月27日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第2巻</td>
+          <td>2014年07月25日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！ μ's→NEXT LoveLive! 2014 ～ENDLESS PARADE～</td>
+          <td>2014年07月23日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」TVアニメ2期 Blu-ray 第1巻</td>
+          <td>2014年06月20日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！〜国立音ノ木坂学院案内〜</td>
+          <td>2013年12月25日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！ μ's 3rd Anniversary LoveLive!</td>
+          <td>2013年12月25日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第7巻</td>
+          <td>2013年09月25日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第6巻</td>
+          <td>2013年08月28日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第5巻</td>
+          <td>2013年07月26日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第4巻</td>
+          <td>2013年06月21日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第3巻</td>
+          <td>2013年05月28日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第2巻</td>
+          <td>2013年04月24日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>「ラブライブ！」Blu-ray 第1巻</td>
+          <td>2013年03月22日</td>
+          <td>μ's</td>
+        </tr>
+        <tr>
+          <td>ラブライブ！ μ's First LoveLive!</td>
+          <td>2012年11月21日</td>
+          <td>μ's</td>
+        </tr>
+
         </tbody>
       </table>
     </div>
   </main>
 
   <script>
-    const input = document.getElementById('searchInput');
-    input.addEventListener('keyup', function () {
-      const filter = input.value.toLowerCase();
+
+  // 搜索过滤
+  const input = document.getElementById('searchInput');
+  input.addEventListener('keyup', function () {
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll('#dataTable tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(filter) ? '' : 'none';
+    });
+  });
+
+  // fetch 侧边栏内容并初始化侧栏相关事件和表格着色
+  fetch("sidebarResume.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("sidebar-container").innerHTML = html;
+
+      // 侧边栏切换按钮和侧栏元素
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebar = document.getElementById("sidebar");
+
+      if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener("click", () => {
+          sidebar.classList.toggle("active");
+        });
+        sidebarToggle.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            sidebar.classList.toggle("active");
+          }
+        });
+      }
+
+      // 表格加颜色，判断第三列文本
       const rows = document.querySelectorAll('#dataTable tbody tr');
       rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(filter) ? '' : 'none';
+        const group = row.cells[2].textContent.trim();
+
+        // 多组合情况下不加颜色
+        if (group.includes('、') || group.includes(',') || group.includes('，') || group.includes('・')) {
+          return; // 多团队，不处理
+        }
+
+        if (group.includes('Aqours')) {
+          row.classList.add('aqours');
+        } else if (group.includes("μ's") || group.includes("μs")) {
+          row.classList.add('muse');
+        } else if (group.includes('虹')) {
+          row.classList.add('nijigasaki');
+        } else if (group.includes('Liella')) {
+          row.classList.add('liella');
+        } else if (group.includes('蓮')) {
+          row.classList.add('hasunosora');
+        }
+      });
+
+      // 给每个表格单元格加 title
+      document.querySelectorAll('#dataTable td').forEach(cell => {
+        cell.setAttribute('title', cell.textContent.trim());
       });
     });
 
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebar = document.getElementById('sidebar');
-    sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
-    sidebarToggle.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        sidebar.classList.toggle('active');
-      }
-    });
+
   </script>
 </body>
 </html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoveLive 声优表</title>
+  <style>
+    /*body {*/
+    /*  font-family: "微软雅黑", sans-serif;*/
+    /*  background: #f0f4f8;*/
+    /*  margin: 0;*/
+    /*  color: #333;*/
+    /*  display: flex;*/
+    /*  flex-direction: row;*/
+    /*  overflow-x: hidden;*/
+    /*}*/
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    a:visited {
+      color: inherit;
+    }
+
+    /*.main-content {*/
+    /*  flex-grow: 1;*/
+    /*  padding: 20px;*/
+    /*  margin-left: 220px;*/
+    /*  box-sizing: border-box;*/
+    /*  max-width: 960px;*/
+    /*}*/
+
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 40px;
+      border-bottom: 3px solid #ddd;
+      padding-bottom: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      color: white;
+    }
+
+    .muse th {
+      background: #ff1493;
+    }
+    .museT {
+      color: #ff1493;
+      border-bottom: 3px solid #ff1493;
+    }
+    .aqours th {
+      background: #00bfff;
+    }
+    .aqoursT {
+      color: #00bfff;
+      border-bottom: 3px solid #00bfff;
+    }
+    .nijigasaki th {
+      background: #fcc800;
+    }
+    .nijigasakiT {
+      color: #fcc800;
+      border-bottom: 3px solid #fcc800;
+    }
+    .liella th {
+      background: #9932cc;
+    }
+    .liellaT {
+      color: #9932cc;
+      border-bottom: 3px solid #9932cc;
+    }
+    .hasunosora th {
+      background: #ffc0cb;
+    }
+    .hasunosoraT {
+      color: #ffc0cb;
+      border-bottom: 3px solid #ffc0cb;
+    }
+
+    /*#sidebarToggle {*/
+    /*  position: fixed;*/
+    /*  top: 12px;*/
+    /*  left: 12px;*/
+    /*  width: 40px;*/
+    /*  height: 40px;*/
+    /*  background: pink;*/
+    /*  backdrop-filter: blur(10px);*/
+    /*  border-radius: 50%;*/
+    /*  cursor: pointer;*/
+    /*  display: none;*/
+    /*  align-items: center;*/
+    /*  justify-content: center;*/
+    /*  z-index: 1100;*/
+    /*}*/
+
+    /*#sidebarToggle svg {*/
+    /*  fill: black;*/
+    /*  width: 24px;*/
+    /*  height: 24px;*/
+    /*}*/
+
+    /*@media (max-width: 767px) {*/
+    /*  .main-content {*/
+    /*    margin-left: 0;*/
+    /*    padding: 16px;*/
+    /*    max-width: 100%;*/
+    /*  }*/
+
+    /*  #sidebarToggle {*/
+    /*    display: flex;*/
+    /*  }*/
+    
+    body {
+      font-family: "微软雅黑", Arial, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      color: #333;
+      display: flex;
+      flex-direction: row;
+      overflow-x: hidden;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      background: rgba(240, 240, 240, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #000;
+      border-right: 1px solid #ddd;
+      border-bottom-right-radius: 12px;
+      padding: 80px 0 10px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      height: auto;
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sidebar ul li a {
+      display: block;
+      padding: 12px 20px;
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    #sidebar ul li a:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+      border-left: 4px solid #0078d4;
+      padding-left: 16px;
+    }
+
+    #sidebarToggle {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      width: 40px;
+      height: 40px;
+      background: pink;
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+    }
+
+    #sidebarToggle svg {
+      fill: black;
+      width: 24px;
+      height: 24px;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 20px;
+      margin-left: 220px;
+      box-sizing: border-box;
+      max-width: 960px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 5px;
+      color: #f08300;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0;
+    }
+
+    section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      margin-bottom: 20px;
+    }
+
+    section h2 {
+      border-bottom: 2px solid #f08300;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      color: #f08300;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .contact-info p {
+      margin: 5px 0;
+    }
+
+    @media (max-width: 767px) {
+      #sidebar {
+        transform: translateX(-220px);
+      }
+
+      #sidebar.active {
+        transform: translateX(0);
+      }
+
+      #sidebarToggle {
+        display: flex;
+      }
+
+      main {
+        margin-left: 0;
+        padding: 16px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<div id="sidebarToggle" title="菜单切换" aria-label="菜单切换" role="button" tabindex="0">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 6h18M3 12h18M3 18h18" stroke="black" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<main class="main-content">
+  <h2 class="museT">μ's</h2>
+  <table class="muse">
+    <thead><tr><th>角色</th><th>声优</th></tr></thead>
+    <tbody>
+      <tr><td><a href="u0.html">高坂穗乃果</a></td><td><a href="#">新田惠海</a></td></tr>
+      <tr><td><a href="u1.html">南小鸟</a></td><td><a href="#">内田彩</a></td></tr>
+      <tr><td><a href="u2.html">园田海未</a></td><td><a href="#">三森铃子</a></td></tr>
+      <tr><td><a href="u3.html">西木野真姬</a></td><td><a href="#">Pile</a></td></tr>
+      <tr><td><a href="u4.html">矢泽妮可</a></td><td><a href="#">德井青空</a></td></tr>
+      <tr><td><a href="u5.html">小泉花阳</a></td><td><a href="#">久保由利香</a></td></tr>
+      <tr><td><a href="u6.html">东条希</a></td><td><a href="#">楠田亚衣奈</a></td></tr>
+      <tr><td><a href="u7.html">绚濑绘里</a></td><td><a href="#">南条爱乃</a></td></tr>
+      <tr><td><a href="u8.html">星空凛</a></td><td><a href="#">饭田里穗</a></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="aqoursT">Aqours</h2>
+  <table class="aqours">
+    <thead><tr><th>角色</th><th>声优</th></tr></thead>
+    <tbody>
+      <tr><td><a href="aqoursResume/chika.html">高海千歌</a></td><td><a href="#">伊波杏樹</a></td></tr>
+      <tr><td><a href="aqoursResume/riko.html">樱内梨子</a></td><td><a href="#">逢田梨香子</a></td></tr>
+      <tr><td><a href="aqoursResume/you.html">渡边曜</a></td><td><a href="#">齐藤朱夏</a></td></tr>
+      <tr><td><a href="aqoursResume/yoshiko.html">津岛善子</a></td><td><a href="#">小林爱香</a></td></tr>
+      <tr><td><a href="aqoursResume/ruby.html">黑泽露比</a></td><td><a href="#">降幡爱</a></td></tr>
+      <tr><td><a href="aqoursResume/hanamaru.html">国木田花丸</a></td><td><a href="#">高槻加奈子</a></td></tr>
+      <tr><td><a href="aqoursResume/kanan.html">松浦果南</a></td><td><a href="#">诹访奈奈香</a></td></tr>
+      <tr><td><a href="aqoursResume/dia.html">黑泽黛雅</a></td><td><a href="#">小宫有纱</a></td></tr>
+      <tr><td><a href="aqoursResume/mari.html">小原鞠莉</a></td><td><a href="#">铃木爱奈</a></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="nijigasakiT">虹ヶ咲学園スクールアイドル同好会</h2>
+  <table class="nijigasaki">
+    <thead><tr><th>角色</th><th>声优</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#">高咲侑</a></td><td><a href="#">矢野妃菜喜</a></td></tr>
+      <tr><td><a href="#">上原步梦</a></td><td><a href="#">大西亚玖璃</a></td></tr>
+      <tr><td><a href="#">中须霞</a></td><td><a href="#">相良茉优</a></td></tr>
+      <tr><td><a href="#">樱坂雫</a></td><td><a href="#">前田佳织里</a></td></tr>
+      <tr><td><a href="#">朝香果林</a></td><td><a href="#">久保田未梦</a></td></tr>
+      <tr><td><a href="#">宫下爱</a></td><td><a href="#">村上奈津实</a></td></tr>
+      <tr><td><a href="#">近江彼方</a></td><td><a href="#">鬼头明里</a></td></tr>
+      <tr><td><a href="#">优木雪菜</a></td><td><a href="#">楠木灯</a></td></tr>
+      <tr><td><a href="#">艾玛·维尔德</a></td><td><a href="#">指出毬亚</a></td></tr>
+      <tr><td><a href="#">天王寺璃奈</a></td><td><a href="#">田中千惠美</a></td></tr>
+      <tr><td><a href="#">三船栞子</a></td><td><a href="#">小泉萌香</a></td></tr>
+      <tr><td><a href="#">米娅·泰勒</a></td><td><a href="#">内田秀</a></td></tr>
+      <tr><td><a href="#">钟岚珠</a></td><td><a href="#">法元明菜</a></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="liellaT">Liella!</h2>
+  <table class="liella">
+    <thead><tr><th>角色</th><th>声优</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#">涩谷香音</a></td><td><a href="#">伊达小百合</a></td></tr>
+      <tr><td><a href="#">唐可可</a></td><td><a href="#">Liyuu</a></td></tr>
+      <tr><td><a href="#">岚千砂都</a></td><td><a href="#">岬奈奈</a></td></tr>
+      <tr><td><a href="#">平安名堇</a></td><td><a href="#">青山渚</a></td></tr>
+      <tr><td><a href="#">叶月恋</a></td><td><a href="#">青山吉能</a></td></tr>
+      <tr><td><a href="#">若菜四季</a></td><td><a href="#">大熊和奏</a></td></tr>
+      <tr><td><a href="#">鬼冢冬毬</a></td><td><a href="#">结那</a></td></tr>
+      <tr><td><a href="#">米女芽</a></td><td><a href="#">坂倉花</a></td></tr>
+      <tr><td><a href="#">鬼冢夏美</a></td><td><a href="#">絃花みき</a></td></tr>
+      <tr><td><a href="#">桜小路希奈子</a></td><td><a href="#">野中ここな</a></td></tr>
+      <tr><td><a href="#">维恩·玛格丽特</a></td><td><a href="#">结城安奈</a></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="hasunosoraT">蓮ノ空女学院スクールアイドルクラブ</h2>
+  <table class="hasunosora">
+    <thead><tr><th>角色</th><th>声优</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#">日野下花帆</a></td><td><a href="#">指出毬亚</a></td></tr>
+      <tr><td><a href="#">村野さやか</a></td><td><a href="#">花宮初奈</a></td></tr>
+      <tr><td><a href="#">乙宗梢</a></td><td><a href="#">佐藤日向</a></td></tr>
+      <tr><td><a href="#">夕霧綴理</a></td><td><a href="#">菅叶和</a></td></tr>
+      <tr><td><a href="#">安養寺姫芽</a></td><td><a href="#">山本杏奈</a></td></tr>
+      <tr><td><a href="#">大沢瑠璃乃</a></td><td><a href="#">青山瑠里</a></td></tr>
+      <tr><td><a href="#">藤島慈</a></td><td><a href="#">藤本彩花</a></td></tr>
+      <tr><td><a href="#">百生吟子</a></td><td><a href="#">小日向美春</a></td></tr>
+      <tr><td><a href="#">塞拉斯</a></td><td><a href="#">秋奈</a></td></tr>
+      <tr><td><a href="#">徒町小鈴</a></td><td><a href="#">佐藤舞</a></td></tr>
+      <tr><td><a href="#">桂城泉</a></td><td><a href="#">月音こな</a></td></tr>
+    </tbody>
+  </table>
+</main>
+
+<script>
+  fetch("sidebarResume.html")
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("sidebar-container").innerHTML = html;
+
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("sidebarToggle");
+
+      toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      toggle.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          sidebar.classList.toggle("active");
+        }
+      });
+    });
+</script>
+
+</body>
+</html>
+
