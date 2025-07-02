@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>高海千歌 - 简历</title>
+  <style>
+    body {
+      font-family: "微软雅黑", Arial, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      color: #333;
+      display: flex;
+      flex-direction: row;
+      overflow-x: hidden;
+    }
+
+    /* sidebar 样式 */
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      background: rgba(240, 240, 240, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #000;
+      border-right: 1px solid #ddd;
+      border-bottom-right-radius: 12px;
+      padding: 80px 0 10px 0;  /* ✅ 加大底部 padding 让背景延伸 */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+      height: auto; /* ✅ 重点：不设置固定高度，使用内容高度 */
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sidebar ul li a {
+      display: block;
+      padding: 12px 20px;
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    #sidebar ul li a:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+      border-left: 4px solid #0078d4;
+      padding-left: 16px;
+    }
+
+    /* 菜单按钮 */
+    #sidebarToggle {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      width: 40px;
+      height: 40px;
+      background: pink;
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+    }
+
+    #sidebarToggle svg {
+      fill: black;
+      width: 24px;
+      height: 24px;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 20px;
+      margin-left: 220px;
+      box-sizing: border-box;
+      max-width: 960px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 5px;
+      color: #ff6f61;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0;
+    }
+
+    section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      margin-bottom: 20px;
+    }
+
+    section h2 {
+      border-bottom: 2px solid #ff6f61;
+      padding-bottom: 8px;
+      margin-bottom: 15px;
+      color: #ff6f61;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .contact-info p {
+      margin: 5px 0;
+    }
+
+    /* 移动端适配 */
+    @media (max-width: 767px) {
+      #sidebar {
+        transform: translateX(-220px);
+      }
+
+      #sidebar.active {
+        transform: translateX(0);
+      }
+
+      #sidebarToggle {
+        display: flex;
+      }
+
+      main {
+        margin-left: 0;
+        padding: 16px;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 侧边栏容器（JS插入） -->
+  <div id="sidebar-container"></div>
+
+  <!-- 菜单切换按钮（移动端显示） -->
+  <div id="sidebarToggle" title="菜单切换" aria-label="菜单切换" role="button" tabindex="0">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="black" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- 主体内容 -->
+  <main>
+    <header>
+      <h1>高海千歌</h1>
+      <p>热情活力的团队成员 / 偶像歌手</p>
+    </header>
+
+    <section>
+      <h2>个人简介</h2>
+      <p>高海千歌是《Love Live! Sunshine!!》中的主角，来自静冈县沼津市。她充满热情，拥有极强的团队凝聚力和领导力，致力于成为一名优秀的校园偶像。</p>
+    </section>
+
+    <section>
+      <h2>技能</h2>
+      <ul>
+        <li>优秀的歌唱和舞蹈能力</li>
+        <li>团队协作与领导能力</li>
+        <li>积极乐观，沟通能力强</li>
+        <li>快速学习与适应新环境</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>联系方式</h2>
+      <div class="contact-info">
+        <p>电话: 123-4567-8901</p>
+        <p>邮箱: chika.takami@example.com</p>
+        <p>地址: 静冈县沼津市</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 加载 sidebar.html 插入 sidebar 容器
+    fetch('../sidebarResume.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('sidebar-container').innerHTML = html;
+
+        // 添加切换功能（等待插入后绑定）
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.getElementById('sidebarToggle');
+
+        toggle.addEventListener('click', () => {
+          sidebar.classList.toggle('active');
+        });
+
+        toggle.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            sidebar.classList.toggle('active');
+          }
+        });
+      });
+  </script>
+</body>
+</html>

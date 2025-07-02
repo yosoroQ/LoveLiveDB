@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>思维导图 - 自定义颜色 + 拖拽 + 折叠 + 弹窗</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: #f0f0f0;
+      font-family: sans-serif;
+    }
+    #mindmap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-origin: center center;
+      transition: transform 0.3s;
+    }
+    .node {
+      position: absolute;
+      padding: 10px 16px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      cursor: move;
+      white-space: nowrap;
+      transition: transform 0.3s;
+      user-select: none;
+      color: #fff;
+    }
+    .node:hover {
+      transform: scale(1.05);
+    }
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+    #toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 50, 50, 0.95);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      display: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div id="toast"></div>
+  <div id="mindmap"></div>
+  <svg id="lines"></svg>
+
+  <script>
+    const data = {
+      text: "中心点",
+      color: "#8E44AD",
+      children: [
+        {
+          text: "分支 1",
+          color: "#FF5733",
+          children: Array.from({ length: 9 }, (_, i) => ({ text: `子分支 1-${i + 1}`, color: "#F39C12" }))
+        },
+        {
+          text: "分支 2",
+          color: "#33A1FF",
+          children: Array.from({ length: 9 }, (_, i) => ({ text: `子分支 2-${i + 1}`, color: "#16A085" }))
+        },
+        {
+          text: "分支 3",
+          color: "#9B59B6",
+          children: [ { text: "子分支 3-1", color: "#2980B9" }, { text: "子分支 3-2", color: "#27AE60" } ]
+        },
+        {
+          text: "分支 4",
+          color: "#E67E22",
+          children: [ { text: "子分支 4-1", color: "#D35400" }, { text: "子分支 4-2", color: "#E74C3C" } ]
+        }
+      ]
+    };
+
+    const container = document.getElementById("mindmap");
+    const svg = document.getElementById("lines");
+    const toast = document.getElementById("toast");
+    let nodeId = 0;
+    let activeExpandedId = null;
+    const nodes = {};
+
+    function showToast(msg) {
+      toast.innerText = msg;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 1800);
+    }
+
+    function createNode(text, x, y, color, parentId = null) {
+      const node = document.createElement("div");
+      const id = "node-" + (nodeId++);
+      node.className = "node";
+      node.innerText = text;
+      node.style.left = `${x}px`;
+      node.style.top = `${y}px`;
+      node.dataset.id = id;
+      node.dataset.expanded = "false";
+      node.style.background = color || "#555";
+      container.appendChild(node);
+
+      // 拖拽
+      let offsetX, offsetY, isDragging = false;
+      node.addEventListener('mousedown', e => {
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        isDragging = true;
+      });
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          node.style.left = `${e.pageX - offsetX}px`;
+          node.style.top = `${e.pageY - offsetY}px`;
+          redrawLines();
+        }
+      });
+      document.addEventListener('mouseup', () => { isDragging = false; });
+
+      nodes[id] = { el: node, x, y, children: [], parentId };
+      return node;
+    }
+
+    function drawLine(fromEl, toEl, color, fromId) {
+      const fromRect = fromEl.getBoundingClientRect();
+      const toRect = toEl.getBoundingClientRect();
+      const x1 = fromRect.left + fromRect.width / 2 + window.scrollX;
+      const y1 = fromRect.top + fromRect.height / 2 + window.scrollY;
+      const x2 = toRect.left + toRect.width / 2 + window.scrollX;
+      const y2 = toRect.top + toRect.height / 2 + window.scrollY;
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", x1);
+      line.setAttribute("y1", y1);
+      line.setAttribute("x2", x2);
+      line.setAttribute("y2", y2);
+      line.setAttribute("stroke", color);
+      line.setAttribute("stroke-width", 2);
+      line.dataset.from = fromId;
+      svg.appendChild(line);
+    }
+
+    function redrawLines() {
+      svg.innerHTML = '';
+      Object.values(nodes).forEach(({ el, parentId }) => {
+        if (parentId && nodes[parentId]) {
+          drawLine(nodes[parentId].el, el, nodes[el.dataset.id].color, parentId);
+        }
+      });
+    }
+
+    function collapseNode(id) {
+      const node = nodes[id];
+      node.children.forEach(childId => {
+        if (nodes[childId]) {
+          container.removeChild(nodes[childId].el);
+          delete nodes[childId];
+        }
+      });
+      Array.from(svg.querySelectorAll("line")).forEach(line => {
+        if (line.dataset.from === id) line.remove();
+      });
+      node.children = [];
+      node.el.dataset.expanded = "false";
+      if (activeExpandedId === id) activeExpandedId = null;
+    }
+
+    function renderChildren(data, x, y, parentId, baseAngle, parentColor, depth = 1) {
+      const spacing = 160 + depth * 20;
+      const childCount = data.children.length;
+      const angleRange = Math.min(Math.PI * 2, Math.PI * (childCount / 6));
+      const angleStart = baseAngle - angleRange / 2;
+      const angleStep = childCount > 1 ? angleRange / (childCount - 1) : 0;
+
+      data.children.forEach((child, i) => {
+        const angle = angleStart + i * angleStep;
+        const cx = x + Math.cos(angle) * spacing;
+        const cy = y + Math.sin(angle) * spacing;
+        const childNode = createNode(child.text, cx, cy, child.color || parentColor, parentId);
+        const childId = childNode.dataset.id;
+        nodes[childId].color = child.color || parentColor;
+        nodes[parentId].children.push(childId);
+        requestAnimationFrame(() => {
+          drawLine(nodes[parentId].el, childNode, child.color || parentColor, parentId);
+        });
+        if (child.children) {
+          childNode.onclick = (e) => {
+            e.stopPropagation();
+            renderChildren(child, cx, cy, childId, angle, child.color || parentColor, depth + 1);
+          };
+        }
+      });
+    }
+
+    function getRootAngles(count) {
+      const angles = [];
+      const total = 2 * Math.PI;
+      for (let i = 0; i < count; i++) {
+        angles.push(-Math.PI / 2 + (i * total / count));
+      }
+      return angles;
+    }
+
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+    const rootNode = createNode(data.text, centerX, centerY, data.color);
+    nodes[rootNode.dataset.id].color = data.color;
+    const rootAngles = getRootAngles(data.children.length);
+
+    data.children.forEach((child, i) => {
+      const angle = rootAngles[i];
+      const cx = centerX + Math.cos(angle) * 200;
+      const cy = centerY + Math.sin(angle) * 200;
+      const childNode = createNode(child.text, cx, cy, child.color, rootNode.dataset.id);
+      const childId = childNode.dataset.id;
+      nodes[childId].color = child.color;
+      nodes[rootNode.dataset.id].children.push(childId);
+      requestAnimationFrame(() => {
+        drawLine(rootNode, childNode, child.color, rootNode.dataset.id);
+      });
+      if (child.children) {
+        childNode.onclick = (e) => {
+          e.stopPropagation();
+          const isExpanded = childNode.dataset.expanded === "true";
+          if (!isExpanded) {
+            if (activeExpandedId && activeExpandedId !== childId) {
+              showToast("请先关闭其他分支后再打开新分支");
+              return;
+            }
+            renderChildren(child, cx, cy, childId, angle, child.color, 1);
+            childNode.dataset.expanded = "true";
+            activeExpandedId = childId;
+          } else {
+            collapseNode(childId);
+          }
+        };
+      }
+    });
+  </script>
+</body>
+</html>

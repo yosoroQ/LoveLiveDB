@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ラブライブ！BD 情報</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      display: flex;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      background: rgba(240, 240, 240, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #000;
+      border-right: 1px solid #ddd;
+      border-bottom-right-radius: 12px;
+      padding: 2em 0; /* ✅ 只改这里 */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sidebar ul li a {
+      display: block;
+      padding: 12px 20px;
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    #sidebar ul li a:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+      border-left: 4px solid #0078d4;
+      padding-left: 16px;
+    }
+
+    #sidebarToggle {
+      position: fixed;
+      top: 0px; /* ✅ 原来是 top: 0；现在下移一点 */
+      left: 0;
+      width: 48px;
+      height: 48px;
+      background: pink;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+    }
+
+    #sidebarToggle svg {
+      fill: #000;
+      width: 24px;
+      height: 24px;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      margin-left: 200px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 0.5em;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      max-width: 240px;
+      padding: 10px;
+      font-size: 1em;
+      margin: 0 auto 1em auto;
+      display: block;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+      background-color: #fff;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      font-size: 0.95em;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        transform: translateX(-220px);
+        transition: transform 0.3s ease;
+      }
+      #sidebar.active {
+        transform: translateX(0);
+      }
+      #sidebarToggle {
+        display: flex;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
+
+    @media (min-width: 769px) {
+      #sidebarToggle {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebarToggle" title="メニュー" role="button" tabindex="0">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="black" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <nav id="sidebar">
+    <ul>
+      <li><a href="index.html">首页</a></li>
+      <li><a href="index.html">成员</a></li>
+      <li><a href="test.html">歌曲</a></li>
+      <li><a href="test.html">声优</a></li>
+      <li><a href="test.html">TV</a></li>
+      <li><a href="mindp.html">思维导图</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <h1>ラブライブ！BD・ライブ 一覧</h1>
+    <input type="text" id="searchInput" placeholder="キーワードでフィルタ（タイトル/チームなど）">
+
+    <div class="table-container">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>タイトル</th>
+            <th>日付</th>
+            <th>チーム</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ラブライブ！サンシャイン!! Aqours Finale LoveLive! ～永久stage～ Blu-ray Memorial BOX</td>
+            <td>2026年02月11日</td>
+            <td>aqours</td>
+          </tr>
+          <tr>
+            <td>LoveLive! Series Asia Tour 2024 ～みんなで叶える物語～</td>
+            <td>2025年10月01日</td>
+            <td>liella</td>
+          </tr>
+          <tr>
+            <td>ラブライブ！虹ヶ咲学園スクールアイドル同好会 7th Live! NEW TOKIMEKI LAND</td>
+            <td>2025年06月18日</td>
+            <td>虹</td>
+          </tr>
+          <!-- 你可以继续追加更多条目 -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const input = document.getElementById('searchInput');
+    input.addEventListener('keyup', function () {
+      const filter = input.value.toLowerCase();
+      const rows = document.querySelectorAll('#dataTable tbody tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+    sidebarToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        sidebar.classList.toggle('active');
+      }
+    });
+  </script>
+</body>
+</html>

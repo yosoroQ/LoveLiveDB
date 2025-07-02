@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>成员</title>
+  <style>
+    body {
+      font-family: "微软雅黑", sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      background: rgba(240, 240, 240, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #000;
+      border-right: 1px solid #ddd;
+      border-bottom-right-radius: 12px;
+      padding: 1em 0; /* ✅ 只改这里 */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 1000;
+    }
+
+    #sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #sidebar ul li a {
+      display: block;
+      padding: 12px 20px;
+      color: #000;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    #sidebar ul li a:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+      border-left: 4px solid #0078d4;
+      padding-left: 16px;
+    }
+
+    #sidebarToggle {
+      position: fixed;
+      top: 0px;
+      left: 0;
+      width: 48px;
+      height: 48px;
+      background: pink;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+    }
+
+    #sidebarToggle svg {
+      fill: white;
+      width: 24px;
+      height: 24px;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      max-width: 960px;
+      margin: auto;
+      box-sizing: border-box;
+    }
+
+    .team-container {
+      margin: auto;
+    }
+    .team {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      margin-bottom: 20px;
+      padding: 16px;
+    }
+    .team h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 2px solid #ff1493;
+      padding-bottom: 6px;
+      font-size: 1.5rem;
+    }
+    .members {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .member {
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      font-weight: 500;
+      box-shadow: 0 1px 4px rgb(0 120 212 / 0.5);
+      word-break: break-word;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .member a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .member:hover {
+      transform: scale(1.05);
+    }
+    
+    h2.aqours {
+      color: #00bfff !important;
+      border-bottom: 3px solid #00bfff !important;
+      padding-bottom: 6px;
+    }
+    
+    h2.rainbow {
+      color: #fcc800 !important;
+      border-bottom: 3px solid #fcc800 !important;
+      padding-bottom: 6px;
+    }
+    
+    h2.liella {
+      color: #9932cc !important;
+      border-bottom: 3px solid #9932cc !important;
+      padding-bottom: 6px;
+    }
+    
+    h2.linklike {
+      color: #ffc0cb !important;
+      border-bottom: 3px solid #ffc0cb !important;
+      padding-bottom: 6px;
+    }
+    
+
+    @media screen and (min-width: 768px) {
+      #sidebar {
+        width: 220px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        box-shadow: none;
+        padding-top: 60px;
+      }
+      .main-content {
+        margin-left: 220px;
+      }
+      #sidebarToggle {
+        display: none !important;
+      }
+    }
+
+    @media screen and (max-width: 767px) {
+      #sidebar {
+        width: 220px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-220px);
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        padding-top: 60px;
+      }
+      #sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      #sidebarToggle {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="sidebarToggle" title="菜单切换" aria-label="菜单切换" role="button" tabindex="0">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <nav id="sidebar" aria-label="侧栏导航">
+    <ul>
+      <li><a href="index.html">首页</a></li>
+      <li><a href="index.html">成员</a></li>
+      <li><a href="test.html">歌曲</a></li>
+      <li><a href="test.html">BD / DVD</a></li>
+      <li><a href="test.html">TV</a></li>
+      <li><a href="mindp.html">世界，在我手中！</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content" tabindex="0">
+    <div class="team-container">
+      <div class="team">
+        <h2 style="color: #ff1493;">μ's</h2>
+        <div class="members">
+          <div class="member" style="background:#ffbb33;"><a href="u0.html">高坂穂乃果</a></div>
+          <div class="member" style="background:#c6ccc8;"><a href="u1.html">南ことり</a></div>
+          <div class="member" style="background:#5b4dff;"><a href="u2.html">園田海未</a></div>
+          <div class="member" style="background:#ff6333;"><a href="u3.html">西木野真姫</a></div>
+          <div class="member" style="background:#ff66d9;"><a href="u4.html">矢澤にこ</a></div>
+          <div class="member" style="background:#00ff7f;"><a href="u5.html">小泉花陽</a></div>
+          <div class="member" style="background:#ff1aff;"><a href="u6.html">東條 希</a></div>
+          <div class="member" style="background:#00d5ff;"><a href="u7.html">絢瀬絵里</a></div>
+          <div class="member" style="background:#009b9f;"><a href="u8.html">星空 凛</a></div>
+        </div>
+      </div>
+      <div class="team">
+        <h2 class="aqours">Aqours</h2>
+        <div class="members">
+          <div class="member" style="background:#f08300;"><a href="aqoursResume/chika.html">高海千歌</a></div>
+          <div class="member" style="background:#ff4d5e;"><a href="aqoursResume/chika.html">桜内梨子</a></div>
+          <div class="member" style="background:#00d5ff;"><a href="aqoursResume/chika.html" >渡辺 曜</a></div>
+          <div class="member" style="background:#f5f5f5;">
+              <!--<a href="resume4.html">津島善子</a>-->
+              <a href="resume4.html" style="color: black;">津島善子</a>
+          </div>
+          <div class="member" style="background:#e62ea8;"><a href="resume5.html">黒澤ルビィ</a></div>
+          <div class="member" style="background:#ffff00;">
+              <!--<a href="resume6.html">国木田花丸</a>-->
+              <a href="resume4.html" style="color: black;">国木田花丸</a>
+          </div>
+          <div class="member" style="background:#00a968;"><a href="resume7.html">松浦果南</a></div>
+          <div class="member" style="background:#ff0000;"><a href="resume8.html">黒澤ダイヤ</a></div>
+          <div class="member" style="background:#aa00cc;"><a href="resume9.html">小原鞠莉</a></div>
+        </div>
+      </div>
+      
+      <div class="team">
+        <h2 class="rainbow">虹ヶ咲学園スクールアイドル同好会</h2>
+        <div class="members">
+          <div class="member" style="background:#E74C3C;"><a href="resume1.html">成员 1</a></div>
+          <div class="member" style="background:#8E44AD;"><a href="resume2.html">成员 2</a></div>
+          <div class="member" style="background:#2980B9;"><a href="resume3.html">成员 3</a></div>
+          <div class="member" style="background:#16A085;"><a href="resume4.html">成员 4</a></div>
+          <div class="member" style="background:#F39C12;"><a href="resume5.html">成员 5</a></div>
+          <div class="member" style="background:#D35400;"><a href="resume6.html">成员 6</a></div>
+          <div class="member" style="background:#27AE60;"><a href="resume7.html">成员 7</a></div>
+          <div class="member" style="background:#3498DB;"><a href="resume8.html">成员 8</a></div>
+          <div class="member" style="background:#2ECC71;"><a href="resume9.html">成员 9</a></div>
+        </div>
+      </div>
+      
+      <div class="team">
+        <h2 class="liella">Liella!</h2>
+        <div class="members">
+          <div class="member" style="background:#E74C3C;"><a href="resume1.html">成员 1</a></div>
+          <div class="member" style="background:#8E44AD;"><a href="resume2.html">成员 2</a></div>
+          <div class="member" style="background:#2980B9;"><a href="resume3.html">成员 3</a></div>
+          <div class="member" style="background:#16A085;"><a href="resume4.html">成员 4</a></div>
+          <div class="member" style="background:#F39C12;"><a href="resume5.html">成员 5</a></div>
+          <div class="member" style="background:#D35400;"><a href="resume6.html">成员 6</a></div>
+          <div class="member" style="background:#27AE60;"><a href="resume7.html">成员 7</a></div>
+          <div class="member" style="background:#3498DB;"><a href="resume8.html">成员 8</a></div>
+          <div class="member" style="background:#2ECC71;"><a href="resume9.html">成员 9</a></div>
+        </div>
+      </div>
+
+      <div class="team">
+        <h2 class="linklike">蓮ノ空女学院スクールアイドルクラブ</h2>
+        <div class="members">
+          <div class="member" style="background:#E74C3C;"><a href="resume1.html">成员 1</a></div>
+          <div class="member" style="background:#8E44AD;"><a href="resume2.html">成员 2</a></div>
+          <div class="member" style="background:#2980B9;"><a href="resume3.html">成员 3</a></div>
+          <div class="member" style="background:#16A085;"><a href="resume4.html">成员 4</a></div>
+          <div class="member" style="background:#F39C12;"><a href="resume5.html">成员 5</a></div>
+          <div class="member" style="background:#D35400;"><a href="resume6.html">成员 6</a></div>
+          <div class="member" style="background:#27AE60;"><a href="resume7.html">成员 7</a></div>
+          <div class="member" style="background:#3498DB;"><a href="resume8.html">成员 8</a></div>
+          <div class="member" style="background:#2ECC71;"><a href="resume9.html">成员 9</a></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    sidebarToggle.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        sidebar.classList.toggle('active');
+      }
+    });
+  </script>
+
+</body>
+</html>
